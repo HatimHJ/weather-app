@@ -1,64 +1,75 @@
 import * as React from "react";
 import { useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import {
+	ScrollView,
+	Button,
+	StyleSheet,
+	Text,
+	TextInput,
+	View,
+} from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { useGlobalContext } from "../context";
 
 export default function Home() {
-	const { fetchdata, whethers, isNight } = useGlobalContext();
+	const {
+		fetchLocation,
+		fetchData,
+		weathers,
+		location,
+		isNight,
+		setSearch,
+		search,
+	} = useGlobalContext();
+	const [reload, setReload] = React.useState(false);
 
 	useEffect(() => {
-		fetchdata();
-	}, []);
+		fetchLocation();
+		fetchData();
+		setReload(false);
+	}, [reload]);
+
+	const handleSearch = () => {
+		setReload(true);
+	};
 
 	return (
 		<>
-			{whethers && (
-				<View
+			<View style={{ margin: 20, flexDirection: "row", alignItems: "center" }}>
+				<TextInput
+					style={styles.input}
+					onChangeText={(value) => setSearch(value)}
+					value={search}
+					placeholder="e.g. london"
+				/>
+				<Button title="search" onPress={handleSearch} />
+			</View>
+			{weathers && (
+				<ScrollView
 					style={{
 						...styles.container,
-						backgroundColor: `${isNight ? "#66f" : "#aa0"}`,
 					}}
 				>
+					<Text>country : {weathers.name}</Text>
 					<Icon
-						name={`${isNight ? "moon" : "sun"}`}
+						name={`${weathers.dt > weathers.sys.sunset ? "moon" : "sun"}`}
 						size={30}
-						color={`${isNight ? "#fff" : "#fff"}`}
 					/>
-					<Text
-						style={{
-							color: `${isNight ? "#fff" : "#000"}`,
-						}}
-					>
-						{whethers.elevation}
+					<Text>current time : {Number(weathers.dt)}</Text>
+					<Text>sunrise time : {Number(weathers.sys.sunrise)}</Text>
+					<Text>sunset time : {Number(weathers.sys.sunset)}</Text>
+					<Text>temp : {Number(weathers.main.temp - 273.15).toFixed(0)}°</Text>
+					<Text style={{}}>
+						max : {Number(weathers.main.temp_max - 273.15).toFixed(0)}°
 					</Text>
-					<Text
-						style={{
-							color: `${isNight ? "#fff" : "#000"}`,
-						}}
-					>
-						{whethers.latitude}
+					<Text style={{}}>
+						min : {Number(weathers.main.temp_min - 273.15).toFixed(0)}°
 					</Text>
-					<Text
-						style={{
-							color: `${isNight ? "#fff" : "#000"}`,
-						}}
-					>
-						{whethers.longitude}
+					<Text style={{}}>
+						feels like : {Number(weathers.main.feels_like - 273.15).toFixed(0)}°
 					</Text>
-					{String(whethers.current_weather.time)
-						.split("T")
-						.map((time, key) => (
-							<Text
-								key={key}
-								style={{
-									color: `${isNight ? "#fff" : "#000"}`,
-								}}
-							>
-								{time}
-							</Text>
-						))}
-				</View>
+					<Text style={{}}>weather :{weathers.weather[0].main}</Text>
+				</ScrollView>
 			)}
 		</>
 	);
@@ -68,7 +79,12 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: "#0dd",
-		alignItems: "center",
-		justifyContent: "center",
+	},
+	input: {
+		height: 40,
+		margin: 12,
+		borderWidth: 1,
+		padding: 10,
+		flex: 1,
 	},
 });

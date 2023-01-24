@@ -10,18 +10,32 @@ import Home from "./screen/Home";
 import About from "./screen/About";
 
 const Stack = createNativeStackNavigator();
-const Drawer = createDrawerNavigator();
 
 export default function App() {
 	return (
 		<AppProvider>
 			<StatusBar animated={true} backgroundColor="#61d2f2" />
 			<NavigationContainer>
-				<Drawer.Navigator initialRouteName="About">
-					<Drawer.Screen name="Home" component={Home} />
-					<Drawer.Screen name="About" component={About} />
-				</Drawer.Navigator>
+				<Stack.Navigator
+					initialRouteName="Drawers"
+					screenOptions={{ headerShown: false }}
+				>
+					<Stack.Screen name="Home" component={Home} />
+					<Stack.Screen name="About" component={About} />
+					<Stack.Screen name="Drawers" component={Drawers} />
+				</Stack.Navigator>
 			</NavigationContainer>
 		</AppProvider>
+	);
+}
+
+const Drawer = createDrawerNavigator();
+
+function Drawers() {
+	return (
+		<Drawer.Navigator>
+			<Drawer.Screen name="About" component={About} />
+			<Drawer.Screen name="Home" component={Home} />
+		</Drawer.Navigator>
 	);
 }
