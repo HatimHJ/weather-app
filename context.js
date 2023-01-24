@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 const AppContext = React.createContext();
 
-const KEY = process.env.API_KEY;
+const KEY = process.env.REACT_APP_API_KEY;
 
 const AppProvider = ({ children }) => {
 	const [location, setLocation] = useState({
